@@ -66,8 +66,8 @@ if st.sidebar.button('CALCULAR RIESGO'):
 
     # Generar el código HTML y JavaScript para los velocímetros
     def generate_gauge_html(kpi, name):
-        width = 260  # Aumenta el ancho un 30%
-        height = 195 # Aumenta la altura un 30%
+        width = 260  # Aumenta el ancho un 30% (200 * 1.3)
+        height = 195 # Aumenta la altura un 30% (150 * 1.3)
         html = f"""
         <div id="{name}-gauge" style="width: {width}px; height: {height}px;"></div>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
