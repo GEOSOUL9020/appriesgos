@@ -63,11 +63,11 @@ if st.sidebar.button('CALCULAR RIESGO'):
     # Ejecutar el scoring
     EL = ejecutar_modelos(registro)
 
-    # Calcular los kpis
-    kpi_pd = float(EL.pd * 100)  # Convertir a float
-    kpi_ead = float(EL.ead * 100)  # Convertir a float
-    kpi_lgd = float(EL.lgd * 100)  # Convertir a float
-    kpi_el = float(EL.principal * EL.pd * EL.ead * EL.lgd)
+    # Calcular los kpis con conversión a float para evitar el FutureWarning
+    kpi_pd = float(EL.pd.iloc[0] * 100)  # Convertir a float extrayendo el primer valor de la serie
+    kpi_ead = float(EL.ead.iloc[0] * 100)  # Convertir a float
+    kpi_lgd = float(EL.lgd.iloc[0] * 100)  # Convertir a float
+    kpi_el = float(EL.principal.iloc[0] * EL.pd.iloc[0] * EL.ead.iloc[0] * EL.lgd.iloc[0])
 
     # Velocímetros
     pd_options = {
@@ -145,4 +145,5 @@ if st.sidebar.button('CALCULAR RIESGO'):
         st.metric(label="COMISIÓN A APLICAR", value=kpi_el * 3)  # Metido en estático por simplicidad
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
+
 
