@@ -1,13 +1,13 @@
 from codigo_de_ejecucion import *
 import streamlit as st
-import matplotlib.pyplot as plt
-import numpy as np
+import pandas as pd
 
 # CONFIGURACION DE LA PÁGINA
 st.set_page_config(
-     page_title='DS4B Risk Score Analyzer',
-     page_icon='DS4B_Logo_Blanco_Vertical_FB.png',
-     layout='wide')
+    page_title='DS4B Risk Score Analyzer',
+    page_icon='DS4B_Logo_Blanco_Vertical_FB.png',
+    layout='wide'
+)
 
 # SIDEBAR
 with st.sidebar:
@@ -35,62 +35,74 @@ with st.sidebar:
 st.title('DS4B RISK SCORE ANALYZER')
 
 # CALCULAR
-if st.sidebar.button('CALCULAR RIESGO'):
-    # Crear el registro
-    registro = pd.DataFrame({'ingresos_verificados': ingresos_verificados,
-                             'vivienda': vivienda,
-                             'finalidad': finalidad,
-                             'num_cuotas': num_cuotas,
-                             'antigüedad_empleo': antigüedad_empleo,
-                             'rating': rating,
-                             'ingresos': ingresos,
-                             'dti': dti,
-                             'num_lineas_credito': num_lineas_credito,
-                             'porc_uso_revolving': porc_uso_revolving,
-                             'principal': principal,
-                             'tipo_interes': tipo_interes,
-                             'imp_cuota': imp_cuota,
-                             'num_derogatorios': num_derogatorios},
-                            index=[0])
+# Crear el registro
+registro = pd.DataFrame({
+    'ingresos_verificados': ingresos_verificados,
+    'vivienda': vivienda,
+    'finalidad': finalidad,
+    'num_cuotas': num_cuotas,
+    'antigüedad_empleo': antigüedad_empleo,
+    'rating': rating,
+    'ingresos': ingresos,
+    'dti': dti,
+    'num_lineas_credito': num_lineas_credito,
+    'porc_uso_revolving': porc_uso_revolving,
+    'principal': principal,
+    'tipo_interes': tipo_interes,
+    'imp_cuota': imp_cuota,
+    'num_derogatorios': num_derogatorios
+}, index=[0])
 
+# CALCULAR RIESGO
+if st.sidebar.button('CALCULAR RIESGO'):
     # Ejecutar el scoring
     EL = ejecutar_modelos(registro)
 
-    # Extraer valores
-    kpi_pd = float(EL.pd.iloc[0] * 100)
-    kpi_ead = float(EL.ead.iloc[0] * 100)
-    kpi_lgd = float(EL.lgd.iloc[0] * 100)
-    kpi_el = float(EL.principal.iloc[0] * EL.pd.iloc[0] * EL.ead.iloc[0] * EL.lgd.iloc[0])
+    # Calcular los kpis
+    kpi_pd = float(EL.pd * 100)
+    kpi_ead = float(EL.ead * 100)
+    kpi_lgd = float(EL.lgd * 100)
+    kpi_el = float(EL.principal * EL.pd * EL.ead * EL.lgd)
 
-    # Función para crear velocímetros
-    def plot_gauge(value, title):
-        fig, ax = plt.subplots()
-        ax.set_xlim(-1, 1)
-        ax.set_ylim(-1, 1)
-        theta = np.linspace(-np.pi, 0, 100)
-        ax.plot(np.cos(theta), np.sin(theta), color='black', lw=2)
-        ax.fill_betweenx(np.sin(theta), 0, np.cos(theta), where=(np.cos(theta) <= np.cos(np.pi * value / 100)), color='red')
-        ax.text(0, -0.5, f'{value:.2f}%', fontsize=12, ha='center')
-        ax.text(0, 0.8, title, fontsize=14, ha='center', fontweight='bold')
-        ax.axis('off')
-        return fig
+    # Generar el código HTML y JavaScript para los velocímetros
+    def generate_gauge_html(kpi, name):
+        html = f"""
+        <div id="{name}-gauge" style="width: 200px; height: 150px;"></div>
+        <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
+        <script type="text/javascript">
+            var chart = echarts.init(document.getElementById('{name}-gauge'));
+            var option = {{
+                tooltip: {{formatter: '{{a}} <br/>{{b}} : {{c}}%'}},
+                series: [{{
+                    name: '{name}',
+                    type: 'gauge',
+                    axisLine: {{lineStyle: {{width: 10}}}},
+                    progress: {{show: true, width: 10}},
+                    detail: {{valueAnimation: true, formatter: '{{value}}'}},
+                    data: [{{value: {kpi}, name: '{name}'}}]
+                }}]
+            }};
+            chart.setOption(option);
+        </script>
+        """
+        return html
 
-    # Mostrar gráficos
+    # Representarlos en la app
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.pyplot(plot_gauge(kpi_pd, "PD"))
+        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=200, height=150)
     with col2:
-        st.pyplot(plot_gauge(kpi_ead, "EAD"))
+        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=200, height=150)
     with col3:
-        st.pyplot(plot_gauge(kpi_lgd, "LGD"))
+        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=200, height=150)
 
     # Prescripción
     col1, col2 = st.columns(2)
     with col1:
         st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value=f"{kpi_el:,.2f}")
+        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
     with col2:
         st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value=f"{kpi_el * 3:,.2f}")
+        st.metric(label="COMISIÓN A APLICAR", value=kpi_el * 3)
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
