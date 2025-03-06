@@ -64,7 +64,7 @@ if st.sidebar.button('CALCULAR RIESGO'):
     EL = ejecutar_modelos(registro)
 
     # Asegurarse de que estamos extrayendo un número correcto de los modelos
-    kpi_pd = float(EL.pd.iloc[0] * 100)  # Convertir a float extrayendo el primer valor de la serie
+    kpi_pd = float(EL.pd.iloc[0] * 100)  # Convertir a float
     kpi_ead = float(EL.ead.iloc[0] * 100)  # Convertir a float
     kpi_lgd = float(EL.lgd.iloc[0] * 100)  # Convertir a float
     kpi_el = float(EL.principal.iloc[0] * EL.pd.iloc[0] * EL.ead.iloc[0] * EL.lgd.iloc[0])
@@ -89,7 +89,7 @@ if st.sidebar.button('CALCULAR RIESGO'):
                 },
                 "progress": {"show": "true", "width": 10},
                 "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                "data": [{"value": kpi_pd, "name": "PD"}],
+                "data": [{"value": float(kpi_pd), "name": "PD"}],  # Asegurarse de que sea un float
             }
         ],
     }
@@ -108,7 +108,7 @@ if st.sidebar.button('CALCULAR RIESGO'):
                 },
                 "progress": {"show": "true", "width": 10},
                 "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                "data": [{"value": kpi_ead, "name": "EAD"}],
+                "data": [{"value": float(kpi_ead), "name": "EAD"}],  # Asegurarse de que sea un float
             }
         ],
     }
@@ -127,7 +127,7 @@ if st.sidebar.button('CALCULAR RIESGO'):
                 },
                 "progress": {"show": "true", "width": 10},
                 "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                "data": [{"value": kpi_lgd, "name": "LGD"}],
+                "data": [{"value": float(kpi_lgd), "name": "LGD"}],  # Asegurarse de que sea un float
             }
         ],
     }
@@ -145,12 +145,13 @@ if st.sidebar.button('CALCULAR RIESGO'):
     col1, col2 = st.columns(2)
     with col1:
         st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
+        st.metric(label="PÉRDIDA ESPERADA", value=str(kpi_el))  # Convertir a cadena
     with col2:
         st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value=kpi_el * 3)  # Metido en estático por simplicidad
+        st.metric(label="COMISIÓN A APLICAR", value=str(kpi_el * 3))  # Convertir a cadena
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
+
 
 
 
