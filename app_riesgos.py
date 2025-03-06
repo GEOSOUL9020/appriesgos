@@ -99,3 +99,12 @@ if st.sidebar.button('CALCULAR RIESGO'):
         st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=260, height=195)
 
     # Prescripción
+    col1, col2 = st.columns(2)
+    with col1:
+        st.write('La pérdida esperada es de (Euros):')
+        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
+    with col2:
+        st.write('Se recomienda un extratipo de (Euros):')
+        st.metric(label="COMISIÓN A APLICAR", value=round(kpi_el * 3))
+else:
+    st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
