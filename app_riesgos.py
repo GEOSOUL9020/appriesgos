@@ -58,11 +58,11 @@ if st.sidebar.button('CALCULAR RIESGO'):
     # Ejecutar el scoring
     EL = ejecutar_modelos(registro)
 
-    # Calcular los kpis
-    kpi_pd = float(EL.pd * 100)
-    kpi_ead = float(EL.ead * 100)
-    kpi_lgd = float(EL.lgd * 100)
-    kpi_el = float(EL.principal * EL.pd * EL.ead * EL.lgd)
+    # Calcular los kpis y redondearlos a enteros
+    kpi_pd = round(float(EL.pd * 100))
+    kpi_ead = round(float(EL.ead * 100))
+    kpi_lgd = round(float(EL.lgd * 100))
+    kpi_el = round(float(EL.principal * EL.pd * EL.ead * EL.lgd))
 
     # Generar el código HTML y JavaScript para los velocímetros
     def generate_gauge_html(kpi, name):
@@ -100,9 +100,9 @@ if st.sidebar.button('CALCULAR RIESGO'):
     col1, col2 = st.columns(2)
     with col1:
         st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value=round(kpi_el))  # Redondea a entero
+        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
     with col2:
         st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value=round(kpi_el * 3))  # Redondea a entero
+        st.metric(label="COMISIÓN A APLICAR", value=round(kpi_el * 3))
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
