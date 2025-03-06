@@ -69,7 +69,10 @@ if st.sidebar.button('CALCULAR RIESGO'):
         width = 260  # Aumenta el ancho un 30% (200 * 1.3)
         height = 195 # Aumenta la altura un 30% (150 * 1.3)
         html = f"""
-        <div id="{name}-gauge" style="width: {width}px; height: {height}px;"></div>
+        <div style="text-align: center;">
+            <div id="{name}-gauge" style="width: {width}px; height: {height}px;"></div>
+            <div>{name}</div>
+        </div>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
         <script type="text/javascript">
             var chart = echarts.init(document.getElementById('{name}-gauge'));
@@ -92,11 +95,11 @@ if st.sidebar.button('CALCULAR RIESGO'):
     # Representarlos en la app
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=260, height=220)
     with col2:
-        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=260, height=220)
     with col3:
-        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=260, height=220)
 
     # Prescripción
     col1, col2 = st.columns(2)
