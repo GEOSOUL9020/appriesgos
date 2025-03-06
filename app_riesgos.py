@@ -58,76 +58,76 @@ registro = pd.DataFrame({'ingresos_verificados':ingresos_verificados,
 
 
 
-#CALCULAR RIESGO
+# CALCULAR RIESGO
 if st.sidebar.button('CALCULAR RIESGO'):
-    #Ejecutar el scoring
+    # Ejecutar el scoring
     EL = ejecutar_modelos(registro)
 
-    #Calcular los kpis
-    kpi_pd = int(EL.pd * 100)
-    kpi_ead = int(EL.ead * 100)
-    kpi_lgd = int(EL.lgd * 100)
-    kpi_el = int(EL.principal * EL.pd * EL.ead * EL.lgd)
+    # Calcular los kpis
+    kpi_pd = float(EL.pd * 100)  # Convertir a float
+    kpi_ead = float(EL.ead * 100)  # Convertir a float
+    kpi_lgd = float(EL.lgd * 100)  # Convertir a float
+    kpi_el = float(EL.principal * EL.pd * EL.ead * EL.lgd)
 
-    #Velocimetros
-    #Codigo de velocimetros tomado de https://towardsdatascience.com/5-streamlit-components-to-build-better-applications-71e0195c82d4
+    # Velocímetros
     pd_options = {
-            "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
-            "series": [
-                {
-                    "name": "PD",
-                    "type": "gauge",
-                    "axisLine": {
-                        "lineStyle": {
-                            "width": 10,
-                        },
+        "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
+        "series": [
+            {
+                "name": "PD",
+                "type": "gauge",
+                "axisLine": {
+                    "lineStyle": {
+                        "width": 10,
                     },
-                    "progress": {"show": "true", "width": 10},
-                    "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                    "data": [{"value": kpi_pd, "name": "PD"}],
-                }
-            ],
-        }
+                },
+                "progress": {"show": "true", "width": 10},
+                "detail": {"valueAnimation": "true", "formatter": "{value}"},
+                "data": [{"value": kpi_pd, "name": "PD"}],
+            }
+        ],
+    }
 
-    #Velocimetro para ead
+    # Velocímetro para ead
     ead_options = {
-            "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
-            "series": [
-                {
-                    "name": "EAD",
-                    "type": "gauge",
-                    "axisLine": {
-                        "lineStyle": {
-                            "width": 10,
-                        },
+        "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
+        "series": [
+            {
+                "name": "EAD",
+                "type": "gauge",
+                "axisLine": {
+                    "lineStyle": {
+                        "width": 10,
                     },
-                    "progress": {"show": "true", "width": 10},
-                    "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                    "data": [{"value": kpi_ead, "name": "EAD"}],
-                }
-            ],
-        }
+                },
+                "progress": {"show": "true", "width": 10},
+                "detail": {"valueAnimation": "true", "formatter": "{value}"},
+                "data": [{"value": kpi_ead, "name": "EAD"}],
+            }
+        ],
+    }
 
-    #Velocimetro para lgd
+    # Velocímetro para lgd
     lgd_options = {
-            "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
-            "series": [
-                {
-                    "name": "LGD",
-                    "type": "gauge",
-                    "axisLine": {
-                        "lineStyle": {
-                            "width": 10,
-                        },
+        "tooltip": {"formatter": "{a} <br/>{b} : {c}%"},
+        "series": [
+            {
+                "name": "LGD",
+                "type": "gauge",
+                "axisLine": {
+                    "lineStyle": {
+                        "width": 10,
                     },
-                    "progress": {"show": "true", "width": 10,},
-                    "detail": {"valueAnimation": "true", "formatter": "{value}"},
-                    "data": [{"value": kpi_lgd, "name": "LGD"}],
-                }
-            ],
-        }
-    #Representarlos en la app
-    col1,col2,col3 = st.columns(3)
+                },
+                "progress": {"show": "true", "width": 10},
+                "detail": {"valueAnimation": "true", "formatter": "{value}"},
+                "data": [{"value": kpi_lgd, "name": "LGD"}],
+            }
+        ],
+    }
+
+    # Representarlos en la app
+    col1, col2, col3 = st.columns(3)
     with col1:
         st_echarts(options=pd_options, width="110%", key=0)
     with col2:
@@ -135,14 +135,14 @@ if st.sidebar.button('CALCULAR RIESGO'):
     with col3:
         st_echarts(options=lgd_options, width="110%", key=2)
 
-    #Prescripcion
-    col1,col2 = st.columns(2)
+    # Prescripción
+    col1, col2 = st.columns(2)
     with col1:
         st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value = kpi_el)
+        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
     with col2:
         st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value = kpi_el * 3) #Metido en estático por simplicidad
-
+        st.metric(label="COMISIÓN A APLICAR", value=kpi_el * 3)  # Metido en estático por simplicidad
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
+
