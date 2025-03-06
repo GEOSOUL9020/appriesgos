@@ -100,9 +100,9 @@ if st.sidebar.button('CALCULAR RIESGO'):
     col1, col2 = st.columns(2)
     with col1:
         st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
+        st.metric(label="PÉRDIDA ESPERADA", value=round(kpi_el))  # Redondea a entero
     with col2:
         st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value=kpi_el * 3)
+        st.metric(label="COMISIÓN A APLICAR", value=round(kpi_el * 3))  # Redondea a entero
 else:
     st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
