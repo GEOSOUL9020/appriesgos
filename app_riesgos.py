@@ -66,8 +66,8 @@ if st.sidebar.button('CALCULAR RIESGO'):
 
     # Generar el código HTML y JavaScript para los velocímetros
     def generate_gauge_html(kpi, name):
-        width = 260  # Aumenta el ancho un 30% (200 * 1.3)
-        height = 195 # Aumenta la altura un 30% (150 * 1.3)
+        width = 300  # Aumenta el ancho un 50% (200 * 1.5)
+        height = 225 # Aumenta la altura un 50% (150 * 1.5)
         html = f"""
         <div id="{name}-gauge" style="width: {width}px; height: {height}px;"></div>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
@@ -78,7 +78,7 @@ if st.sidebar.button('CALCULAR RIESGO'):
                 series: [{{
                     name: '{name}',
                     type: 'gauge',
-                    axisLine: {{lineStyle: {{width: 10}}}},
+                    axisLine: {{lineStyle: {{width: 10, color: 'red'}}}},
                     progress: {{show: true, width: 10}},
                     detail: {{valueAnimation: true, formatter: '{{value}}'}},
                     data: [{{value: {kpi}, name: '{name}'}}]
@@ -92,11 +92,11 @@ if st.sidebar.button('CALCULAR RIESGO'):
     # Representarlos en la app
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=300, height=225)
     with col2:
-        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=300, height=225)
     with col3:
-        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=260, height=195)
+        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=300, height=225)
 
     # Prescripción
     col1, col2 = st.columns(2)
