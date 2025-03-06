@@ -66,8 +66,10 @@ if st.sidebar.button('CALCULAR RIESGO'):
 
     # Generar el código HTML y JavaScript para los velocímetros
     def generate_gauge_html(kpi, name):
+        width = 260  # Aumenta el ancho un 30%
+        height = 195 # Aumenta la altura un 30%
         html = f"""
-        <div id="{name}-gauge" style="width: 200px; height: 150px;"></div>
+        <div id="{name}-gauge" style="width: {width}px; height: {height}px;"></div>
         <script src="https://cdn.jsdelivr.net/npm/echarts@5.4.3/dist/echarts.min.js"></script>
         <script type="text/javascript">
             var chart = echarts.init(document.getElementById('{name}-gauge'));
@@ -90,19 +92,10 @@ if st.sidebar.button('CALCULAR RIESGO'):
     # Representarlos en la app
     col1, col2, col3 = st.columns(3)
     with col1:
-        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=200, height=150)
+        st.components.v1.html(generate_gauge_html(kpi_pd, 'PD'), width=260, height=195)
     with col2:
-        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=200, height=150)
+        st.components.v1.html(generate_gauge_html(kpi_ead, 'EAD'), width=260, height=195)
     with col3:
-        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=200, height=150)
+        st.components.v1.html(generate_gauge_html(kpi_lgd, 'LGD'), width=260, height=195)
 
     # Prescripción
-    col1, col2 = st.columns(2)
-    with col1:
-        st.write('La pérdida esperada es de (Euros):')
-        st.metric(label="PÉRDIDA ESPERADA", value=kpi_el)
-    with col2:
-        st.write('Se recomienda un extratipo de (Euros):')
-        st.metric(label="COMISIÓN A APLICAR", value=round(kpi_el * 3))
-else:
-    st.write('DEFINE LOS PARÁMETROS DEL PRÉSTAMO Y HAZ CLICK EN CALCULAR RIESGO')
